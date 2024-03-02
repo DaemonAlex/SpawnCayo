@@ -1,56 +1,26 @@
 Citizen.CreateThread(function()
-    -- Enable the island's scenario groups, making the island's entities (like vegetation) spawn.
-    SetScenarioGroupEnabled('Heist_Island_Peds', true)
+    local cayoPericoCoords = vector3(4840.571, -5174.425, 2.0)
+    local loadDistance = 2000.0
+    local isLoaded = false
 
-    -- Requesting IPLs for Cayo Perico to ensure all aspects of the island are loaded properly.
-    RequestIpl("h4_islandairstrip")
-    RequestIpl("h4_islandx_mansion")
-    RequestIpl("h4_islandx_maindock")
-    RequestIpl("h4_islandxdock_water_hatch")
-    RequestIpl("h4_islandx_maindock_props")
-    RequestIpl("h4_islandx_maindock_sealights")
-    RequestIpl("h4_islandx_props")
-    RequestIpl("h4_int_placement_h4")
-    RequestIpl("h4_islandx_mansion_vault")
-    RequestIpl("h4_islandairstrip_props")
-    RequestIpl("h4_islandx_mansion_props")
-    RequestIpl("h4_islandx_mansion_b")
-    RequestIpl("h4_islandx_mansion_lod")
-    RequestIpl("h4_islandx_mansion_guardfence")
-    RequestIpl("h4_islandx_mansion_b_side_fence")
-    RequestIpl("h4_islandx_mansion_lights")
-    RequestIpl("h4_islandx_mansion_gate")
-    RequestIpl("h4_islandx_maindock_lod")
-    RequestIpl("h4_islandxdock_props")
-    RequestIpl("h4_beach")
-    RequestIpl("h4_beach_lod")
-    RequestIpl("h4_beach_props")
-    RequestIpl("h4_islandx_barrack_props")
-    RequestIpl("h4_islandx_checkpoint")
-    RequestIpl("h4_islandx_checkpoint_props")
-    RequestIpl("h4_islandx_tower")
-    RequestIpl("h4_islandx_tower_props")
-    RequestIpl("h4_islandx_maindock_props_lod")
-    RequestIpl("h4_islandxdock_props_lod")
-    RequestIpl("h4_islandxdock_props_slod")
-    RequestIpl("h4_islandx_props_lod")
-    RequestIpl("h4_islandx_props_slod")
-    RequestIpl("h4_islandx_mansion_office")
-    RequestIpl("h4_islandx_maindock")
-    RequestIpl("h4_islandx_maindock_props_2")
-    RequestIpl("h4_IslandX_Mansion_B_Side_Fence_2")
-    RequestIpl("h4_islandairstrip_doorsclosed")
-    RequestIpl("h4_Underwater_Gate_Closed")
-    RequestIpl("h4_mansion_gate_closed")
-    RequestIpl("h4_aa_guns")
-    RequestIpl("h4_IslandX_Mansion_GuardFence")
-    RequestIpl("h4_IslandX_Mansion_Entrance_Fence")
-    RequestIpl("h4_north_fence")
+    while true do
+        Citizen.Wait(10000)
 
-    -- Might be needed to ensure the ocean around Cayo Perico is properly rendered
-    SetDeepOceanScaler(0.0)
+        local playerCoords = GetEntityCoords(PlayerPedId())
+        local distance = #(playerCoords - cayoPericoCoords)
 
-    -- Ensures the minimap (radar) shows the Cayo Perico island area
-    SetRadarAsExteriorThisFrame()
-    SetRadarAsInteriorThisFrame(`h4_fake_islandx`, 4700.0, -5145.0, 0, 0) 
+        if distance < loadDistance and not isLoaded then
+            SetScenarioGroupEnabled('Heist_Island_Peds', true)
+            RequestIpl("h4_islandairstrip")
+            RequestIpl("h4_islandx_mansion")
+            RequestIpl("h4_islandx_maindock")
+            isLoaded = true
+        elseif distance >= loadDistance and isLoaded then
+            SetScenarioGroupEnabled('Heist_Island_Peds', false)
+            RemoveIpl("h4_islandairstrip")
+            RemoveIpl("h4_islandx_mansion")
+            RemoveIpl("h4_islandx_maindock")
+            isLoaded = false
+        end
+    end
 end)

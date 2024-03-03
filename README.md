@@ -1,2 +1,2 @@
 # SpawnCayo
-Spawn Cayo Perico in FiveMe
+Spawn Cayo Perico in FiveM
